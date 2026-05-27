@@ -3,254 +3,98 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GovDQ</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <title>GovDQ | Sovereign Data Infrastructure</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #1f1a17;
-      --bg-earth: #5d8374;
-      --accent: #A27B5C;
-      --text-light: #f3f1ed;
+      --bg-deep: #0f172a;
+      --bg-card: #1e293b;
+      --accent-blue: #3b82f6;
+      --accent-gold: #d4b483;
+      --text-white: #f8fafc;
+      --text-muted: #94a3b8;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background-color: var(--bg-deep); color: var(--text-white); line-height: 1.7; }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-light);
-      line-height: 1.6;
-    }
+    header { background: linear-gradient(135deg, #1e293b, #0f172a); text-align: center; padding: 5rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    header img { height: 120px; margin-bottom: 1.5rem; filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.3)); }
+    header h1 { font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 0.5rem; letter-spacing: -1px; }
+    header p { font-size: 1.25rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 2px; }
 
-    header {
-      background-color: var(--bg-earth);
-      text-align: center;
-      padding: 4rem 1rem 3rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    }
+    main { max-width: 1000px; margin: 0 auto; padding: 4rem 2rem; }
 
-    header img {
-      height: 120px;
-      margin-bottom: 1rem;
-    }
+    .hero-section { text-align: center; margin-bottom: 6rem; }
+    .hero-section h2 { font-size: 2.5rem; margin-bottom: 1.5rem; }
 
-    header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 6rem; }
+    .card { background: var(--bg-card); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); transition: transform 0.3s ease; }
+    .card:hover { transform: translateY(-10px); border-color: var(--accent-blue); }
+    .card h3 { color: var(--accent-blue); margin-bottom: 1rem; font-size: 1.5rem; }
 
-    header p {
-      font-size: 1.1rem;
-    }
+    .value-prop { background: rgba(59, 130, 246, 0.05); padding: 3rem; border-radius: 20px; border: 1px solid rgba(59, 130, 246, 0.2); margin-bottom: 6rem; }
+    
+    form { background: var(--bg-card); padding: 3rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    input, textarea { width: 100%; padding: 1rem; margin-bottom: 1.5rem; border: 1px solid #334155; border-radius: 8px; background: #0f172a; color: white; font-size: 1rem; }
+    button { background: var(--accent-blue); color: white; border: none; padding: 1rem 2rem; width: 100%; font-weight: 800; border-radius: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+    button:hover { background: #2563eb; }
 
-    main {
-      padding: 3rem 1rem;
-      text-align: center;
-      max-width: 800px;
-      margin: auto;
-    }
+    footer { text-align: center; padding: 4rem; color: var(--text-muted); border-top: 1px solid #1e293b; }
+    a { color: var(--accent-blue); text-decoration: none; margin: 0 1rem; }
 
-    .intro p {
-      font-size: 1.15rem;
-      margin-bottom: 2rem;
-    }
-
-    .why-us {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2rem;
-      margin-bottom: 3rem;
-    }
-
-    .why-item {
-      background-color: #222;
-      padding: 1.5rem;
-      border-radius: 10px;
-      width: 250px;
-      border: 1px solid #333;
-    }
-
-    .why-item h3 {
-      color: var(--accent);
-      margin-bottom: 0.5rem;
-    }
-
-    form {
-      background-color: #181414;
-      padding: 2rem;
-      border-radius: 10px;
-      max-width: 600px;
-      margin: auto;
-      border: 1px solid #333;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 0.75rem;
-      margin-bottom: 1rem;
-      border: 1px solid #333;
-      border-radius: 6px;
-      background-color: #0f0f0f;
-      color: var(--text-light);
-    }
-
-    input:focus, textarea:focus {
-      border-color: var(--accent);
-      outline: none;
-      box-shadow: 0 0 0 2px var(--accent);
-    }
-
-    button {
-      background-color: var(--accent);
-      border: none;
-      padding: 0.75rem 2rem;
-      width: 100%;
-      color: white;
-      font-weight: 600;
-      border-radius: 6px;
-      cursor: pointer;
-      text-transform: uppercase;
-      transition: transform 0.2s ease;
-    }
-
-    button:hover {
-      transform: scale(1.02);
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem 1rem 1rem;
-      border-top: 1px solid #444;
-      font-size: 0.875rem;
-      color: #aaa;
-    }
-
-    footer a {
-      color: var(--accent);
-      margin: 0 0.5rem;
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    /* Mobile Responsive Styles */
-    @media (max-width: 768px) {
-      header h1 {
-        font-size: 2rem;
-      }
-
-      header p {
-        font-size: 1rem;
-      }
-
-      .intro p {
-        font-size: 1rem;
-      }
-
-      .why-item {
-        width: 100%;
-        max-width: 300px;
-      }
-
-      form {
-        padding: 1.5rem 1rem;
-      }
-
-      button {
-        font-size: 1rem;
-        padding: 0.75rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      header img {
-        height: 80px;
-      }
-
-      header h1 {
-        font-size: 1.6rem;
-      }
-
-      .why-us {
-        gap: 1.5rem;
-      }
-
-      .why-item {
-        padding: 1rem;
-      }
-
-      footer {
-        font-size: 0.8rem;
-      }
-
-      footer a {
-        display: inline-block;
-        margin: 0.25rem;
-      }
-    }
+    @media (max-width: 768px) { header h1 { font-size: 2.5rem; } }
   </style>
 </head>
 <body>
   <header>
     <img src="assets/images/1753254833234.jpg" alt="GovDQ Logo">
     <h1>GovDQ</h1>
-    <p>Govern what you ingest. Trust what you measure.</p>
+    <p>Data Sovereignty for the Institutional Age</p>
   </header>
 
   <main>
-    <section class="intro">
-      <p>GovDQ is a governance-first, API-driven data quality platform.</p>
-      <p>We offer powerful ingestion pipelines, automated DQ metrics, and expert services that help you own your data with clarity and trust.</p>
+    <section class="hero-section">
+      <h2>Stop Paying to Rent Your Own Data.</h2>
+      <p>Modern enterprises are hemorrhaging cash on fragmented SaaS and insecure VPN tunnels. GovDQ is the air-gapped operating system that brings governance, data quality, and sovereign AI compute back onto your infrastructure.</p>
     </section>
 
-    <section class="why-us">
-      <div class="why-item">
-        <h3>API-Driven</h3>
-        <p>Integrate quickly with powerful REST APIs designed for scale and automation.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Sovereign AI Compute</h3>
+        <p>Run RAG, metadata excavation, and data dictionary profiling on your own hardware. Zero cloud dependencies. Zero data leakage.</p>
       </div>
-      <div class="why-item">
-        <h3>Custom Metrics</h3>
-        <p>Track what matters most with configurable data quality metrics tailored to your business.</p>
+      <div class="card">
+        <h3>GitOps Governance</h3>
+        <p>Manage data policies with the same version control and automated rigor as elite software teams. RBAC, audits, and triage via Git.</p>
       </div>
-      <div class="why-item">
-        <h3>Expert Support</h3>
-        <p>Access experienced governance consultants and stewardship tools to guide your success.</p>
+      <div class="card">
+        <h3>VPN-Less Access</h3>
+        <p>Dynamic, just-in-time row-level security filters injected at execution. Secure your data envelope without the overhead of toll-road VPNs.</p>
       </div>
+    </div>
+
+    <section class="value-prop">
+      <h2 style="margin-bottom: 1rem;">Why the switch?</h2>
+      <p>We are the anti-SaaS alternative. By containerizing your entire pipeline—from ingestion and DQ profiling to Gitea-backed stewardship—you reclaim ownership of your compute costs and security posture. Stop patching holes in legacy browsers and start building a permanent, programmable digital vault.</p>
     </section>
 
-<form action="https://formsubmit.co/info@govdq.com" method="POST">
-  <input type="hidden" name="_next" value="https://www.govdq.com/index.html">
-  <input type="hidden" name="_captcha" value="true">
-  <input type="hidden" name="_subject" value="New Contact Message from GovDQ">
-  <input type="text" name="_honey" style="display:none">
-
-  <h2>Get in Touch</h2>
-  <input type="text" name="name" placeholder="Full Name" required>
-  <input type="email" name="email" placeholder="Email Address" required>
-  <textarea name="message" rows="5" placeholder="Your message..." required></textarea>
-  <button type="submit">Submit</button>
-</form>
-
-
+    <form action="https://formsubmit.co/info@govdq.com" method="POST">
+      <input type="hidden" name="_next" value="https://www.govdq.com/index.html">
+      <input type="hidden" name="_subject" value="GovDQ Inquiry">
+      <h2 style="margin-bottom: 2rem;">Secure a Private Demo</h2>
+      <input type="text" name="name" placeholder="Name" required>
+      <input type="email" name="email" placeholder="Institutional Email" required>
+      <textarea name="message" rows="4" placeholder="Briefly describe your current infrastructure bottleneck..." required></textarea>
+      <button type="submit">Request Technical Briefing</button>
+    </form>
   </main>
 
   <footer>
-    <p>
-      <a href="https://github.com/GovDQ">GitHub</a> |
-      <a href="https://x.com/GovDQ">Twitter</a> |
-      <a href="https://www.linkedin.com/company/govdq">LinkedIn</a>
-    </p>
-    <p>© 2025 GovDQ. All rights reserved.</p>
+    <a href="https://github.com/GovDQ">GitHub</a>
+    <a href="https://x.com/GovDQ">Twitter</a>
+    <a href="https://www.linkedin.com/company/govdq">LinkedIn</a>
+    <p style="margin-top: 2rem;">© 2026 GovDQ. Sovereign by Design.</p>
   </footer>
 </body>
 </html>
