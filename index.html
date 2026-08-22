@@ -79,6 +79,25 @@
     }
     .cursor-hidden { opacity: 0 !important; }
 
+    /* The fading wake dots left behind the cursor */
+    .trail-dot {
+      position: fixed;
+      width: 6px; 
+      height: 6px;
+      background-color: #064e3b; 
+      border-radius: 50%;
+      pointer-events: none; 
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      opacity: 0.4;
+      animation: fadeTrail 3s ease-out forwards;
+    }
+
+    @keyframes fadeTrail {
+      0% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+    }
+
     main { max-width: 1000px; margin: 0 auto; padding: 4rem 2rem; }
 
     .hero-section { text-align: center; margin-bottom: 6rem; }
@@ -117,7 +136,7 @@
     footer { text-align: center; padding: 4rem; color: var(--text-muted); border-top: 1px solid var(--border-subtle); }
     a { color: var(--accent-blue); text-decoration: none; margin: 0 1rem; }
 
-    @media (max-width: 768px) { header h1 { font-size: 2.5rem; } .a11y-controls { top: 1rem; right: 1rem; } #cursor-dot { display: none; } }
+    @media (max-width: 768px) { header h1 { font-size: 2.5rem; } .a11y-controls { top: 1rem; right: 1rem; } #cursor-dot { display: none; } .trail-dot { display: none; } }
   </style>
 </head>
 <body>
@@ -305,11 +324,15 @@
         }
       });
 
-      // Cursor Physics Engine
+      // Cursor Physics Engine & Trailing Wake
       let mouseX = window.innerWidth / 2;
       let mouseY = window.innerHeight / 2;
       let dotX = mouseX;
       let dotY = mouseY;
+      
+      // Variables to track when to drop a trail dot
+      let lastSpawnX = dotX;
+      let lastSpawnY = dotY;
 
       window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
@@ -317,7 +340,7 @@
       });
 
       function animateCursor() {
-        // The 0.15 modifier dictates the "weight" and drag of the trail
+        // Linear Interpolation (Lerp) gives the main dot that smooth, heavy drag
         dotX += (mouseX - dotX) * 0.15; 
         dotY += (mouseY - dotY) * 0.15;
         
@@ -325,6 +348,28 @@
           cursorDot.style.left = `${dotX}px`;
           cursorDot.style.top = `${dotY}px`;
         }
+
+        // Logic to drop the trailing wake dots
+        if (isCursorActive) {
+          const dist = Math.hypot(dotX - lastSpawnX, dotY - lastSpawnY);
+          
+          if (dist > 12) { 
+            const trail = document.createElement('div');
+            trail.className = 'trail-dot';
+            trail.style.left = `${dotX}px`;
+            trail.style.top = `${dotY}px`;
+            document.body.appendChild(trail);
+
+            lastSpawnX = dotX;
+            lastSpawnY = dotY;
+
+            // Self-clean the DOM after 3 seconds so the browser doesn't lag
+            setTimeout(() => {
+              trail.remove();
+            }, 3000);
+          }
+        }
+
         requestAnimationFrame(animateCursor);
       }
       animateCursor();
