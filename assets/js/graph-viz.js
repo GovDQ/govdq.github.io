@@ -5,8 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nodes = new vis.DataSet();
     const edges = new vis.DataSet();
 
-    // --- STORYLINE 1: SOVEREIGN ARCHITECTURE & AIR-GAPPED AI ---
-    // Added FastAPI and Local LLM nodes to demonstrate secure compute
+    // --- STATE 0: SOVEREIGN ARCHITECTURE & AIR-GAPPED AI ---
     const sovereignNodes = [
         { id: 1, label: 'Student\nRecords', shape: 'circle', color: '#3b82f6', font: { color: '#ffffff' } },
         { id: 2, label: 'Financial\nAid', shape: 'circle', color: '#1e293b', font: { color: '#ffffff' } },
@@ -22,12 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 's3', from: 4, to: 3, color: { color: '#94a3b8' }, width: 1 },
         { id: 's4', from: 4, to: 5, color: { color: '#94a3b8' }, width: 1 },
         { id: 's5', from: 1, to: 2, color: { color: '#3b82f6' }, width: 1 },
-        { id: 's6', from: 6, to: 4, color: { color: '#94a3b8' }, width: 1 }, // API extracts context from Meta
-        { id: 's7', from: 6, to: 7, color: { color: '#94a3b8' }, width: 1 }  // API sends RAG payload to LLM
+        { id: 's6', from: 6, to: 4, color: { color: '#94a3b8' }, width: 1 }, 
+        { id: 's7', from: 6, to: 7, color: { color: '#94a3b8' }, width: 1 }  
     ];
 
-    // --- STORYLINE 2: LEGACY SILOS & BROKEN LINEAGE ---
-    // Added Compliance Auditor node to trace the data flow failure
+    // --- STATE 1: LEGACY SILOS & BROKEN LINEAGE ---
     const legacyNodes = [
         { id: 1, label: 'SaaS\nVendor A', shape: 'box', color: '#ef4444', font: { color: '#ffffff' } },
         { id: 2, label: 'SaaS\nVendor B', shape: 'box', color: '#ef4444', font: { color: '#ffffff' } },
@@ -37,67 +35,91 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 6, label: 'Compliance\nAuditor', shape: 'circle', color: '#cbd5e1', font: { color: '#0f172a' } }
     ];
     const legacyEdges = [
-        { id: 'L1', from: 6, to: 5, color: { color: '#ef4444' }, width: 2 }, // Auditor hits VPN
-        { id: 'L2', from: 5, to: 1, color: { color: '#ef4444' }, width: 2 }, // VPN hits SaaS A
-        { id: 'L3', from: 1, to: 4, color: { color: '#ef4444' }, dashes: true, width: 2 }, // SaaS exports CSV
+        { id: 'L1', from: 6, to: 5, color: { color: '#ef4444' }, width: 2 }, 
+        { id: 'L2', from: 5, to: 1, color: { color: '#ef4444' }, width: 2 }, 
+        { id: 'L3', from: 1, to: 4, color: { color: '#ef4444' }, dashes: true, width: 2 }, 
         { id: 'L4', from: 2, to: 4, color: { color: '#ef4444' }, dashes: true, width: 2 },
-        { id: 'L5', from: 4, to: 3, color: { color: '#f59e0b' }, width: 2 } // CSV lost to Shadow IT
+        { id: 'L5', from: 4, to: 3, color: { color: '#f59e0b' }, width: 2 } 
     ];
 
-    // Initialize Canvas
+    // --- STATE 2: ENTERPRISE ESB (THE MULESOFT MOCK) ---
+    const esbNodes = [
+        { id: 1, label: 'Core\nMetadata', shape: 'ellipse', color: '#cbd5e1', font: { color: '#0f172a' } },
+        { id: 2, label: 'System API Layer\n(+ vCore Tax)', shape: 'circle', color: '#64748b', font: { color: '#ffffff' } },
+        { id: 3, label: 'DataWeave\nScript Box', shape: 'diamond', color: '#6366f1', font: { color: '#ffffff' } },
+        { id: 4, label: 'Process API Layer\n(+ vCore Tax)', shape: 'circle', color: '#64748b', font: { color: '#ffffff' } },
+        { id: 5, label: 'Experience API Layer\n(+ vCore Tax)', shape: 'circle', color: '#64748b', font: { color: '#ffffff' } },
+        { id: 6, label: 'External\nConsumer', shape: 'box', color: '#1e293b', font: { color: '#ffffff' } }
+    ];
+    const esbEdges = [
+        { id: 'E1', from: 1, to: 2, color: { color: '#94a3b8' }, width: 1 }, 
+        { id: 'E2', from: 2, to: 3, color: { color: '#94a3b8' }, width: 1 }, 
+        { id: 'E3', from: 3, to: 4, color: { color: '#94a3b8' }, width: 1 }, 
+        { id: 'E4', from: 4, to: 5, color: { color: '#94a3b8' }, width: 1 }, 
+        { id: 'E5', from: 5, to: 6, color: { color: '#94a3b8' }, width: 1 }
+    ];
+
+    // Initialize Canvas with Sovereign State
     nodes.add(sovereignNodes);
     edges.add(sovereignEdges);
 
     const data = { nodes: nodes, edges: edges };
     const options = {
         interaction: { hover: true, dragNodes: true, zoomView: false },
-        physics: { stabilization: true, barnesHut: { springLength: 150 } }
+        physics: { stabilization: true, barnesHut: { springLength: 150 } },
+        layout: { hierarchical: false } // Allows for freeform drag and physical bounce
     };
 
     const network = new vis.Network(container, data, options);
 
     // --- INTERACTIVE STORYTELLING CONTROLLERS ---
-    let isLegacy = false;
+    let graphState = 0; // 0 = Sovereign, 1 = Legacy, 2 = ESB Sprawl
     const toggleBtn = document.getElementById('toggleGraphBtn');
     const pulseBtn = document.getElementById('pulseBtn');
 
-    // Default Sovereign Button State
     pulseBtn.innerText = "Simulate Air-Gapped RAG";
 
-    // 1. The Architectural Toggle
+    // 1. The Architectural State Cycler
     toggleBtn.addEventListener('click', () => {
         nodes.clear();
         edges.clear();
         
-        if (!isLegacy) {
-            // Deploy Chaos State
-            nodes.add(legacyNodes);
-            edges.add(legacyEdges);
-            toggleBtn.innerText = "View Sovereign Graph";
-            toggleBtn.style.background = "#d4b483";
-            toggleBtn.style.color = "#0f172a";
-            
-            // Transform action button into an Audit trigger
-            pulseBtn.innerText = "Simulate Compliance Audit";
-            pulseBtn.style.background = "#ef4444"; 
-        } else {
-            // Deploy Order State
+        graphState = (graphState + 1) % 3; 
+
+        if (graphState === 0) {
+            // Deploy Sovereign State
             nodes.add(sovereignNodes);
             edges.add(sovereignEdges);
             toggleBtn.innerText = "View Legacy Silos";
             toggleBtn.style.background = "#1e293b";
             toggleBtn.style.color = "#d4b483";
-            
-            // Transform action button into a RAG trigger
             pulseBtn.innerText = "Simulate Air-Gapped RAG";
             pulseBtn.style.background = "#3b82f6"; 
+            
+        } else if (graphState === 1) {
+            // Deploy Legacy Silos State
+            nodes.add(legacyNodes);
+            edges.add(legacyEdges);
+            toggleBtn.innerText = "View API-Led ESB Trap";
+            toggleBtn.style.background = "#d4b483";
+            toggleBtn.style.color = "#0f172a";
+            pulseBtn.innerText = "Simulate Compliance Audit";
+            pulseBtn.style.background = "#ef4444"; 
+
+        } else if (graphState === 2) {
+            // Deploy Enterprise ESB Trap (MuleSoft Mock)
+            nodes.add(esbNodes);
+            edges.add(esbEdges);
+            toggleBtn.innerText = "View Sovereign Graph";
+            toggleBtn.style.background = "#6366f1";
+            toggleBtn.style.color = "#ffffff";
+            pulseBtn.innerText = "Simulate API-Led Sync";
+            pulseBtn.style.background = "#f59e0b"; 
         }
-        isLegacy = !isLegacy;
     });
 
     // 2. The Data Flow Animations
     pulseBtn.addEventListener('click', () => {
-        // Lock controls during animation sequence
         pulseBtn.disabled = true;
         toggleBtn.disabled = true;
         pulseBtn.style.opacity = "0.5";
@@ -105,24 +127,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let step = 0;
         
-        if (isLegacy) {
-            // NARRATIVE: The Broken Audit Trail
+        if (graphState === 0) {
+            // NARRATIVE: The Sovereign RAG Pipeline (Order)
+            pulseBtn.innerText = "Executing RAG Query...";
+            let flowInterval = setInterval(() => {
+                if (step === 0) {
+                    edges.update({ id: 's6', color: { color: '#10b981' }, width: 4 }); 
+                } else if (step === 1) {
+                    edges.update({ id: 's6', color: { color: '#94a3b8' }, width: 1 });
+                    edges.update({ id: 's7', color: { color: '#10b981' }, width: 4 }); 
+                } else if (step === 2) {
+                    edges.update({ id: 's7', color: { color: '#94a3b8' }, width: 1 });
+                    nodes.update({ id: 7, color: '#10b981', label: '✅ ZERO CLOUD\nDEPENDENCY' }); 
+                } else if (step === 5) { 
+                    nodes.update({ id: 7, color: '#1e293b', label: 'Local Air-Gapped\nLLM' }); 
+                    pulseBtn.disabled = false;
+                    toggleBtn.disabled = false;
+                    pulseBtn.style.opacity = "1";
+                    toggleBtn.style.opacity = "1";
+                    pulseBtn.innerText = "Simulate Air-Gapped RAG";
+                    clearInterval(flowInterval);
+                }
+                step++;
+            }, 600);
+
+        } else if (graphState === 1) {
+            // NARRATIVE: The Broken Audit Trail (Legacy Chaos)
             pulseBtn.innerText = "Tracing Lineage...";
             let flowInterval = setInterval(() => {
                 if (step === 0) {
-                    edges.update({ id: 'L1', color: { color: '#f59e0b' }, width: 4 }); // Auditor -> VPN
+                    edges.update({ id: 'L1', color: { color: '#f59e0b' }, width: 4 }); 
                 } else if (step === 1) {
                     edges.update({ id: 'L1', color: { color: '#ef4444' }, width: 2 });
-                    edges.update({ id: 'L2', color: { color: '#f59e0b' }, width: 4 }); // VPN -> SaaS
+                    edges.update({ id: 'L2', color: { color: '#f59e0b' }, width: 4 }); 
                 } else if (step === 2) {
                     edges.update({ id: 'L2', color: { color: '#ef4444' }, width: 2 });
-                    edges.update({ id: 'L3', color: { color: '#f59e0b' }, width: 4 }); // SaaS -> CSV
+                    edges.update({ id: 'L3', color: { color: '#f59e0b' }, width: 4 }); 
                 } else if (step === 3) {
                     edges.update({ id: 'L3', color: { color: '#ef4444' }, dashes: true, width: 2 });
-                    // CRITICAL FAILURE: Data hits CSV, lineage is severed
                     nodes.update({ id: 4, color: '#ef4444', font: { color: '#ffffff' }, label: '⚠️ LINEAGE\nBROKEN' });
                 } else if (step === 6) { 
-                    // Reset State after holding climax for 3 beats
                     nodes.update({ id: 4, color: '#64748b', label: 'Manual\nCSV Export' });
                     pulseBtn.disabled = false;
                     toggleBtn.disabled = false;
@@ -134,33 +178,48 @@ document.addEventListener('DOMContentLoaded', () => {
                 step++;
             }, 600);
             
-        } else {
-            // NARRATIVE: The Sovereign RAG Pipeline
-            pulseBtn.innerText = "Executing RAG Query...";
+        } else if (graphState === 2) {
+            // NARRATIVE: The Enterprise API-Led Trap (MuleSoft Mock)
             let flowInterval = setInterval(() => {
                 if (step === 0) {
-                    // API extracts Context from Core Metadata
-                    edges.update({ id: 's6', color: { color: '#10b981' }, width: 4 }); 
+                    edges.update({ id: 'E1', color: { color: '#f59e0b' }, width: 4 }); 
+                    pulseBtn.innerText = "System API (+$15k vCore Tax)";
                 } else if (step === 1) {
-                    edges.update({ id: 's6', color: { color: '#94a3b8' }, width: 1 });
-                    // API sends secure payload to Local LLM
-                    edges.update({ id: 's7', color: { color: '#10b981' }, width: 4 }); 
+                    edges.update({ id: 'E1', color: { color: '#94a3b8' }, width: 1 });
+                    edges.update({ id: 'E2', color: { color: '#ef4444' }, width: 4 }); 
+                    pulseBtn.innerText = "DataWeave: Lineage Mangled";
+                    nodes.update({ id: 3, color: '#ef4444', font: { color: '#ffffff' }, label: '⚠️ DATAWEAVE\nBLACK BOX' });
                 } else if (step === 2) {
-                    edges.update({ id: 's7', color: { color: '#94a3b8' }, width: 1 });
-                    // SUCCESS: LLM processes locally
-                    nodes.update({ id: 7, color: '#10b981', label: '✅ ZERO CLOUD\nDEPENDENCY' }); 
-                } else if (step === 5) { 
-                    // Reset State after holding climax for 3 beats
-                    nodes.update({ id: 7, color: '#1e293b', label: 'Local Air-Gapped\nLLM' }); 
+                    edges.update({ id: 'E2', color: { color: '#94a3b8' }, width: 1 });
+                    edges.update({ id: 'E3', color: { color: '#f59e0b' }, width: 4 });
+                    pulseBtn.innerText = "Process API (+$15k vCore Tax)"; 
+                } else if (step === 3) {
+                    edges.update({ id: 'E3', color: { color: '#94a3b8' }, width: 1 });
+                    edges.update({ id: 'E4', color: { color: '#f59e0b' }, width: 4 }); 
+                    pulseBtn.innerText = "Experience API (+$15k vCore Tax)";
+                } else if (step === 4) {
+                    edges.update({ id: 'E4', color: { color: '#94a3b8' }, width: 1 });
+                    edges.update({ id: 'E5', color: { color: '#ef4444' }, dashes: true, width: 2 });
+                    
+                    // CRITICAL CLIMAX: Total Tax and Metadata Orphaned
+                    pulseBtn.innerText = "🚨 Total ESB Tax: $45k/yr 🚨";
+                    pulseBtn.style.opacity = "1";
+                    nodes.update({ id: 1, color: '#ef4444', font: { color: '#ffffff' }, label: '⚠️ METADATA\nORPHANED' });
+                } else if (step === 8) { 
+                    // Reset Sequence
+                    nodes.update({ id: 1, color: '#cbd5e1', font: { color: '#0f172a' }, label: 'Core\nMetadata' });
+                    nodes.update({ id: 3, color: '#6366f1', font: { color: '#ffffff' }, label: 'DataWeave\nScript Box' });
+                    edges.update({ id: 'E5', color: { color: '#94a3b8' }, dashes: false, width: 1 });
+                    
                     pulseBtn.disabled = false;
                     toggleBtn.disabled = false;
-                    pulseBtn.style.opacity = "1";
                     toggleBtn.style.opacity = "1";
-                    pulseBtn.innerText = "Simulate Air-Gapped RAG";
+                    pulseBtn.innerText = "Simulate API-Led Sync";
+                    pulseBtn.style.background = "#f59e0b"; 
                     clearInterval(flowInterval);
                 }
                 step++;
-            }, 600);
+            }, 750); // Slower interval to let the user read the accumulating cost
         }
     });
 });
