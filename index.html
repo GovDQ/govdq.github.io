@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GovDQ | Open-Source Data & Institutional Intelligence</title>
   <link rel="icon" type="image/jpeg" href="assets/images/1753254833234.jpg">
+  
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   
@@ -13,6 +14,9 @@
   <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
   
   <style>
+    /* 
+      1. CSS Variables for Dynamic Theming 
+    */
     :root {
       --bg-deep: #0f172a;
       --bg-card: #1e293b;
@@ -20,15 +24,43 @@
       --accent-gold: #d4b483;
       --text-white: #f8fafc;
       --text-muted: #94a3b8;
+      --border-subtle: rgba(255,255,255,0.1);
+      --input-bg: #0f172a;
+      --error-bg: rgba(239, 68, 68, 0.05);
+    }
+
+    [data-theme="light"] {
+      --bg-deep: #f8fafc;
+      --bg-card: #ffffff;
+      --accent-blue: #2563eb;
+      --accent-gold: #b45309; 
+      --text-white: #0f172a;
+      --text-muted: #475569;
+      --border-subtle: rgba(0,0,0,0.1);
+      --input-bg: #f1f5f9;
+      --error-bg: rgba(239, 68, 68, 0.1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background-color: var(--bg-deep); color: var(--text-white); line-height: 1.7; }
+    
+    /* 2. Text Scaling Accessibility */
+    body { font-family: 'Inter', sans-serif; background-color: var(--bg-deep); color: var(--text-white); line-height: 1.7; transition: background-color 0.3s, color 0.3s; font-size: 1rem; }
+    body.large-text { font-size: 1.15rem; }
+    body.large-text h1 { font-size: 4rem; }
+    body.large-text h2 { font-size: 2.85rem; }
 
-    header { background: linear-gradient(135deg, #1e293b, #0f172a); text-align: center; padding: 5rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    /* 3. Keyboard Navigation Focus States */
+    *:focus-visible { outline: 3px solid var(--accent-blue); outline-offset: 3px; border-radius: 4px; }
+
+    header { background: linear-gradient(135deg, var(--bg-card), var(--bg-deep)); text-align: center; padding: 5rem 1rem; border-bottom: 1px solid var(--border-subtle); position: relative; }
     header img { height: 120px; margin-bottom: 1.5rem; filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.3)); }
     header h1 { font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 0.5rem; letter-spacing: -1px; }
     header p { font-size: 1.25rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 2px; }
+
+    /* Accessibility Control Panel */
+    .a11y-controls { position: absolute; top: 1.5rem; right: 1.5rem; display: flex; gap: 0.5rem; }
+    .a11y-controls button { width: auto; padding: 0.5rem 0.75rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-white); cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .a11y-controls button:hover { border-color: var(--accent-blue); }
 
     main { max-width: 1000px; margin: 0 auto; padding: 4rem 2rem; }
 
@@ -36,45 +68,55 @@
     .hero-section h2 { font-size: 2.5rem; margin-bottom: 1.5rem; }
 
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 6rem; }
-    .card { background: var(--bg-card); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); transition: transform 0.3s ease; }
+    .card { background: var(--bg-card); padding: 2rem; border-radius: 16px; border: 1px solid var(--border-subtle); transition: transform 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
     .card:hover { transform: translateY(-10px); border-color: var(--accent-blue); }
     .card h3 { color: var(--accent-blue); margin-bottom: 1rem; font-size: 1.5rem; }
 
     .value-prop { background: rgba(59, 130, 246, 0.05); padding: 3rem; border-radius: 20px; border: 1px solid rgba(59, 130, 246, 0.2); margin-bottom: 6rem; }
     
-    /* Interactive Sections (Graph & Calculator) */
-    .interactive-section { background: var(--bg-card); padding: 3rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 6rem; }
+    /* Interactive Sections */
+    .interactive-section { background: var(--bg-card); padding: 3rem; border-radius: 20px; border: 1px solid var(--border-subtle); margin-bottom: 6rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
     .interactive-section h2 { margin-bottom: 1rem; font-size: 2rem; }
     .chart-container { position: relative; height: 350px; width: 100%; margin-bottom: 2rem; }
     .slider-container { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.5rem; }
     .slider-container input[type="range"] { width: 100%; cursor: pointer; accent-color: var(--accent-blue); }
-    #institutionalGraph { height: 400px; width: 100%; border: 1px solid #334155; border-radius: 8px; background: #0f172a; margin-top: 2rem; }
+    
+    /* Graph Container */
+    #institutionalGraph { height: 400px; width: 100%; border: 1px solid var(--border-subtle); border-radius: 8px; background: var(--input-bg); margin-top: 2rem; }
 
     /* Scroll Reveal CSS */
     .hidden { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
     .show { opacity: 1; transform: translateY(0); }
     
-    form { background: var(--bg-card); padding: 3rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-    input[type="text"], input[type="email"], textarea, select { width: 100%; padding: 1rem; margin-bottom: 1.5rem; border: 1px solid #334155; border-radius: 8px; background: #0f172a; color: white; font-size: 1rem; }
-    select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; }
+    /* Forms */
+    form { background: var(--bg-card); padding: 3rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--border-subtle); }
+    input[type="text"], input[type="email"], textarea, select { width: 100%; padding: 1rem; margin-bottom: 1.5rem; border: 1px solid var(--border-subtle); border-radius: 8px; background: var(--input-bg); color: var(--text-white); font-size: 1rem; transition: border-color 0.3s; }
+    input:focus, textarea:focus, select:focus { border-color: var(--accent-blue); outline: none; }
+    select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; }
     
-    button { background: var(--accent-blue); color: white; border: none; padding: 1rem 2rem; width: 100%; font-weight: 800; border-radius: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
-    button:hover { background: #2563eb; }
+    button[type="submit"] { background: var(--accent-blue); color: #ffffff; border: none; padding: 1rem 2rem; width: 100%; font-weight: 800; border-radius: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+    button[type="submit"]:hover { background: #2563eb; }
     
-    footer { text-align: center; padding: 4rem; color: var(--text-muted); border-top: 1px solid #1e293b; }
+    footer { text-align: center; padding: 4rem; color: var(--text-muted); border-top: 1px solid var(--border-subtle); }
     a { color: var(--accent-blue); text-decoration: none; margin: 0 1rem; }
 
-    @media (max-width: 768px) { header h1 { font-size: 2.5rem; } }
+    @media (max-width: 768px) { header h1 { font-size: 2.5rem; } .a11y-controls { top: 1rem; right: 1rem; } }
   </style>
 </head>
 <body>
   <header>
+    <!-- Accessibility Controls -->
+    <div class="a11y-controls">
+      <button id="themeToggle" aria-label="Toggle Light and Dark Mode">☀️</button>
+      <button id="textSizeToggle" aria-label="Toggle Large Text Size">A+</button>
+    </div>
+
     <img src="assets/images/1753254833234.jpg" alt="GovDQ Logo">
     <h1>GovDQ</h1>
     <p>Open-Source Data & Institutional Intelligence</p>
   </header>
 
-  <main>
+  <main id="main-content">
     <section class="hero-section hidden">
       <h2>Sharing frameworks, playbooks, and insights for the modern data estate.</h2>
       <p>I share open-source architecture models, research, and practical advice on breaking vendor lock-in and deploying air-gapped AI. This is a space dedicated to institutional intelligence, financial leadership, and building systems that you actually own.</p>
@@ -99,26 +141,25 @@
       </div>
     </div>
 
-    <!-- UPDATED: Institutional Graph Visualization -->
-    <section class="interactive-section hidden">
-      <h2>Graph-Native Data Intelligence</h2>
+    <!-- Institutional Graph Visualization -->
+    <section class="interactive-section hidden" aria-labelledby="graph-heading">
+      <h2 id="graph-heading">Graph-Native Data Intelligence</h2>
       <p>Modern institutional intelligence isn't tabular; it's relational. Interact with the architectural node map below to visualize how core metadata acts as the connective tissue between disparate university systems.</p>
       
-      <!-- NEW: Graph Controls -->
       <div style="display: flex; gap: 1rem; margin-top: 2rem; margin-bottom: 1rem; justify-content: center; flex-wrap: wrap;">
-        <button type="button" id="toggleGraphBtn" style="width: auto; padding: 0.75rem 1.5rem; background: #1e293b; border: 1px solid #d4b483; color: #d4b483; font-weight: 600; border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;">View Legacy Silos</button>
-        <button type="button" id="pulseBtn" style="width: auto; padding: 0.75rem 1.5rem; background: var(--accent-blue); border: none; color: white; font-weight: 600; border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;">Simulate Policy Injection</button>
+        <button type="button" id="toggleGraphBtn" aria-label="Toggle between Legacy and Sovereign Architecture" style="width: auto; padding: 0.75rem 1.5rem; background: var(--bg-deep); border: 1px solid var(--accent-gold); color: var(--accent-gold); font-weight: 600; border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;">View Legacy Silos</button>
+        <button type="button" id="pulseBtn" aria-label="Simulate Data Flow" style="width: auto; padding: 0.75rem 1.5rem; background: var(--accent-blue); border: none; color: #ffffff; font-weight: 600; border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;">Simulate Policy Injection</button>
       </div>
 
-      <div id="institutionalGraph"></div>
+      <div id="institutionalGraph" role="figure" aria-label="Interactive graph displaying institutional data nodes and their connections"></div>
     </section>
 
-    <!-- UPDATED: Financial SaaS Calculator -->
-    <section class="interactive-section hidden">
-      <h2>The Financial SaaS Trap</h2>
+    <!-- Financial SaaS Calculator -->
+    <section class="interactive-section hidden" aria-labelledby="calc-heading">
+      <h2 id="calc-heading">The Financial SaaS Trap</h2>
       <p>Enterprise data catalogs rely on punishing recurring models. Use the slider below to project the 5-year exponential compounding cost of cloud licensing against the flat-rate sustainability of self-hosted, sovereign architecture.</p>
       
-      <div class="chart-container">
+      <div class="chart-container" aria-hidden="true">
         <canvas id="costChart"></canvas>
       </div>
       
@@ -126,19 +167,19 @@
         <label for="userBaseInput" style="color: var(--text-muted); font-weight: 600;">
           Adjust Starting SaaS Licensing Base: <span id="sliderValue" style="color: var(--text-white);">$50,000</span>
         </label>
-        <input type="range" id="userBaseInput" min="10000" max="250000" step="5000" value="50000" oninput="
-          document.getElementById('sliderValue').innerText = '$' + Number(this.value).toLocaleString();
-          let base = Number(this.value);
-          let totalSaaS = base + (base * 1.2) + (base * 1.44) + (base * 1.72) + (base * 2.07);
-          let delta = totalSaaS - 100000;
-          document.getElementById('opportunityCost').innerText = '$' + delta.toLocaleString(undefined, {maximumFractionDigits: 0});
-        ">
+        <!-- NOTE: Removed inline JS so it routes securely through saas-calculator.js -->
+        <input type="range" id="userBaseInput" min="10000" max="250000" step="5000" value="50000" aria-label="Adjust starting SaaS cost slider">
+        
+        <!-- NEW: The Renewal Spike Checkbox -->
+        <div style="margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+          <input type="checkbox" id="renewalSpike" style="width: 1.25rem; height: 1.25rem; cursor: pointer; accent-color: #ef4444;" aria-label="Factor in Year 3 Contract Renewal Spike">
+          <label for="renewalSpike" style="color: var(--text-white); font-weight: 600; cursor: pointer; font-size: 0.95rem;">Simulate Year 3 Lock-In (50% Vendor Rate Hike)</label>
+        </div>
       </div>
 
-      <!-- NEW: Opportunity Cost Box -->
-      <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(239, 68, 68, 0.05); border-left: 4px solid #ef4444; border-radius: 8px;">
+      <div style="margin-top: 2rem; padding: 1.5rem; background: var(--error-bg); border-left: 4px solid #ef4444; border-radius: 8px;">
         <h4 style="color: #ef4444; margin-bottom: 0.5rem; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;">The SaaS Tax (5-Year Delta)</h4>
-        <p style="font-size: 1.25rem; font-weight: 600; color: var(--text-white);">Opportunity Cost: <span id="opportunityCost" style="color: #ef4444;">$272,080</span></p>
+        <p style="font-size: 1.25rem; font-weight: 600; color: var(--text-white);">Opportunity Cost: <span id="opportunityCost" style="color: #ef4444;">$0</span></p>
         <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.5rem;">This represents the compounding capital drain diverted away from institutional engineering and directly into vendor lock-in.</p>
       </div>
     </section>
@@ -148,33 +189,78 @@
       <p>I believe in the power of open-source knowledge sharing. I do not sell shrink-wrapped software or push consulting retainers here. If you are navigating complex data governance issues, looking to optimize your enterprise architecture, or just want to bounce ideas off someone who builds these systems daily, I am always happy to chat.</p>
     </section>
 
-    <form class="hidden" action="https://formsubmit.co/info@govdq.com" method="POST">
+    <form class="hidden" action="https://formsubmit.co/info@govdq.com" method="POST" aria-label="Contact Form">
       <input type="hidden" name="_next" value="https://www.govdq.com/index.html">
       <input type="hidden" name="_subject" value="GovDQ Architecture Chat Request">
       <h2 style="margin-bottom: 2rem; text-align: center;">Request a Free Architecture Chat</h2>
       
-      <input type="text" name="name" placeholder="Name" required>
-      <input type="email" name="email" placeholder="Institutional Email" required>
+      <label for="name" class="sr-only" style="display:none;">Name</label>
+      <input type="text" id="name" name="name" placeholder="Name" required aria-required="true">
       
-      <select name="topic" required>
+      <label for="email" class="sr-only" style="display:none;">Institutional Email</label>
+      <input type="email" id="email" name="email" placeholder="Institutional Email" required aria-required="true">
+      
+      <label for="topic" class="sr-only" style="display:none;">Discussion Topic</label>
+      <select id="topic" name="topic" required aria-required="true">
         <option value="" disabled selected>What would you like to discuss?</option>
         <option value="Data Governance & Metadata">Data Governance & Metadata</option>
         <option value="Sovereign AI & Infrastructure">Sovereign AI & Air-Gapped Infrastructure</option>
         <option value="General Strategy / Networking">General Strategy & Networking</option>
       </select>
       
-      <textarea name="message" rows="4" placeholder="Briefly describe what you're working on..." required></textarea>
+      <label for="message" class="sr-only" style="display:none;">Message</label>
+      <textarea id="message" name="message" rows="4" placeholder="Briefly describe what you're working on..." required aria-required="true"></textarea>
       
       <button type="submit">Schedule a Chat</button>
     </form>
   </main>
 
   <footer class="hidden">
-    <a href="https://github.com/GovDQ">GitHub</a>
-    <a href="https://x.com/GovDQ">Twitter</a>
-    <a href="https://www.linkedin.com/company/govdq">LinkedIn</a>
+    <a href="https://github.com/GovDQ" aria-label="GovDQ GitHub Profile">GitHub</a>
+    <a href="https://x.com/GovDQ" aria-label="GovDQ Twitter Profile">Twitter</a>
+    <a href="https://www.linkedin.com/company/govdq" aria-label="GovDQ LinkedIn Page">LinkedIn</a>
     <p style="margin-top: 2rem;">© 2026 GovDQ. Open Knowledge.</p>
   </footer>
+
+  <!-- Accessibility Logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Theme Toggle Logic
+      const themeBtn = document.getElementById('themeToggle');
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeBtn.innerText = '🌙';
+      }
+
+      themeBtn.addEventListener('click', () => {
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        if (isLight) {
+          document.documentElement.removeAttribute('data-theme');
+          localStorage.setItem('theme', 'dark');
+          themeBtn.innerText = '☀️';
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          localStorage.setItem('theme', 'light');
+          themeBtn.innerText = '🌙';
+        }
+      });
+
+      // 2. Text Size Toggle Logic
+      const textBtn = document.getElementById('textSizeToggle');
+      const savedTextSize = localStorage.getItem('largeText') === 'true';
+      
+      if (savedTextSize) {
+        document.body.classList.add('large-text');
+      }
+
+      textBtn.addEventListener('click', () => {
+        document.body.classList.toggle('large-text');
+        localStorage.setItem('largeText', document.body.classList.contains('large-text'));
+      });
+    });
+  </script>
 
   <!-- Custom External Logic Scripts -->
   <script src="assets/js/scroll-reveal.js"></script>
