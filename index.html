@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -58,9 +58,26 @@
     header p { font-size: 1.25rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 2px; }
 
     /* Accessibility Control Panel */
-    .a11y-controls { position: absolute; top: 1.5rem; right: 1.5rem; display: flex; gap: 0.5rem; }
-    .a11y-controls button { width: auto; padding: 0.5rem 0.75rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-white); cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .a11y-controls { position: absolute; top: 1.5rem; right: 1.5rem; display: flex; gap: 0.5rem; z-index: 1000; }
+    .a11y-controls button { width: auto; padding: 0.5rem 0.75rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-white); cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: opacity 0.3s; }
     .a11y-controls button:hover { border-color: var(--accent-blue); }
+
+    /* 4. Trailing Cursor Styles */
+    #cursor-dot {
+      position: fixed;
+      top: -10px;
+      left: -10px;
+      width: 10px;
+      height: 10px;
+      background-color: #064e3b; /* Dark Green */
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s ease;
+      box-shadow: 0 0 8px rgba(6, 78, 59, 0.4);
+    }
+    .cursor-hidden { opacity: 0 !important; }
 
     main { max-width: 1000px; margin: 0 auto; padding: 4rem 2rem; }
 
@@ -100,15 +117,19 @@
     footer { text-align: center; padding: 4rem; color: var(--text-muted); border-top: 1px solid var(--border-subtle); }
     a { color: var(--accent-blue); text-decoration: none; margin: 0 1rem; }
 
-    @media (max-width: 768px) { header h1 { font-size: 2.5rem; } .a11y-controls { top: 1rem; right: 1rem; } }
+    @media (max-width: 768px) { header h1 { font-size: 2.5rem; } .a11y-controls { top: 1rem; right: 1rem; } #cursor-dot { display: none; } }
   </style>
 </head>
 <body>
+  <!-- The Trailing Cursor Element -->
+  <div id="cursor-dot"></div>
+
   <header>
-    <!-- Accessibility Controls -->
+    <!-- Accessibility & Design Controls -->
     <div class="a11y-controls">
-      <button id="themeToggle" aria-label="Toggle Light and Dark Mode">☀️</button>
+      <button id="themeToggle" aria-label="Toggle Light and Dark Mode">🌙</button>
       <button id="textSizeToggle" aria-label="Toggle Large Text Size">A+</button>
+      <button id="cursorToggle" aria-label="Toggle Trailing Cursor">🪄</button>
     </div>
 
     <img src="assets/images/1753254833234.jpg" alt="GovDQ Logo">
@@ -167,10 +188,9 @@
         <label for="userBaseInput" style="color: var(--text-muted); font-weight: 600;">
           Adjust Starting SaaS Licensing Base: <span id="sliderValue" style="color: var(--text-white);">$50,000</span>
         </label>
-        <!-- NOTE: Removed inline JS so it routes securely through saas-calculator.js -->
         <input type="range" id="userBaseInput" min="10000" max="250000" step="5000" value="50000" aria-label="Adjust starting SaaS cost slider">
         
-        <!-- NEW: The Renewal Spike Checkbox -->
+        <!-- The Renewal Spike Checkbox -->
         <div style="margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem;">
           <input type="checkbox" id="renewalSpike" style="width: 1.25rem; height: 1.25rem; cursor: pointer; accent-color: #ef4444;" aria-label="Factor in Year 3 Contract Renewal Spike">
           <label for="renewalSpike" style="color: var(--text-white); font-weight: 600; cursor: pointer; font-size: 0.95rem;">Simulate Year 3 Lock-In (50% Vendor Rate Hike)</label>
@@ -222,14 +242,17 @@
     <p style="margin-top: 2rem;">© 2026 GovDQ. Open Knowledge.</p>
   </footer>
 
-  <!-- Accessibility Logic -->
+  <!-- Initialization Logic for UI Controls -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. Theme Toggle Logic
+      // 1. Theme Toggle Logic (Now defaults to light)
       const themeBtn = document.getElementById('themeToggle');
-      const savedTheme = localStorage.getItem('theme') || 'dark';
+      const savedTheme = localStorage.getItem('theme') || 'light'; // Default Light
       
-      if (savedTheme === 'light') {
+      if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeBtn.innerText = '☀️';
+      } else {
         document.documentElement.setAttribute('data-theme', 'light');
         themeBtn.innerText = '🌙';
       }
@@ -237,7 +260,7 @@
       themeBtn.addEventListener('click', () => {
         const isLight = document.documentElement.getAttribute('data-theme') === 'light';
         if (isLight) {
-          document.documentElement.removeAttribute('data-theme');
+          document.documentElement.setAttribute('data-theme', 'dark');
           localStorage.setItem('theme', 'dark');
           themeBtn.innerText = '☀️';
         } else {
@@ -250,15 +273,61 @@
       // 2. Text Size Toggle Logic
       const textBtn = document.getElementById('textSizeToggle');
       const savedTextSize = localStorage.getItem('largeText') === 'true';
-      
-      if (savedTextSize) {
-        document.body.classList.add('large-text');
-      }
+      if (savedTextSize) document.body.classList.add('large-text');
 
       textBtn.addEventListener('click', () => {
         document.body.classList.toggle('large-text');
         localStorage.setItem('largeText', document.body.classList.contains('large-text'));
       });
+
+      // 3. Trailing Cursor Logic
+      const cursorBtn = document.getElementById('cursorToggle');
+      const cursorDot = document.getElementById('cursor-dot');
+      
+      // Default to true
+      const savedCursor = localStorage.getItem('cursorActive');
+      let isCursorActive = savedCursor !== 'false'; 
+
+      if (!isCursorActive) {
+        cursorDot.classList.add('cursor-hidden');
+        cursorBtn.style.opacity = '0.5';
+      }
+
+      cursorBtn.addEventListener('click', () => {
+        isCursorActive = !isCursorActive;
+        localStorage.setItem('cursorActive', isCursorActive);
+        if (isCursorActive) {
+          cursorDot.classList.remove('cursor-hidden');
+          cursorBtn.style.opacity = '1';
+        } else {
+          cursorDot.classList.add('cursor-hidden');
+          cursorBtn.style.opacity = '0.5';
+        }
+      });
+
+      // Cursor Physics Engine
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
+      let dotX = mouseX;
+      let dotY = mouseY;
+
+      window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+
+      function animateCursor() {
+        // The 0.15 modifier dictates the "weight" and drag of the trail
+        dotX += (mouseX - dotX) * 0.15; 
+        dotY += (mouseY - dotY) * 0.15;
+        
+        if (cursorDot) {
+          cursorDot.style.left = `${dotX}px`;
+          cursorDot.style.top = `${dotY}px`;
+        }
+        requestAnimationFrame(animateCursor);
+      }
+      animateCursor();
     });
   </script>
 
