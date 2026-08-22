@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'E5', from: 5, to: 6, color: { color: '#94a3b8' }, width: 1 }
     ];
 
-    // Initialize Canvas with Sovereign State
+    // Initialize Canvas
     nodes.add(sovereignNodes);
     edges.add(sovereignEdges);
 
@@ -67,13 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const options = {
         interaction: { hover: true, dragNodes: true, zoomView: false },
         physics: { stabilization: true, barnesHut: { springLength: 150 } },
-        layout: { hierarchical: false } // Allows for freeform drag and physical bounce
+        layout: { hierarchical: false }
     };
 
     const network = new vis.Network(container, data, options);
 
     // --- INTERACTIVE STORYTELLING CONTROLLERS ---
-    let graphState = 0; // 0 = Sovereign, 1 = Legacy, 2 = ESB Sprawl
+    let graphState = 0; 
     const toggleBtn = document.getElementById('toggleGraphBtn');
     const pulseBtn = document.getElementById('pulseBtn');
 
@@ -87,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
         graphState = (graphState + 1) % 3; 
 
         if (graphState === 0) {
-            // Deploy Sovereign State
             nodes.add(sovereignNodes);
             edges.add(sovereignEdges);
             toggleBtn.innerText = "View Legacy Silos";
@@ -97,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
             pulseBtn.style.background = "#3b82f6"; 
             
         } else if (graphState === 1) {
-            // Deploy Legacy Silos State
             nodes.add(legacyNodes);
             edges.add(legacyEdges);
             toggleBtn.innerText = "View API-Led ESB Trap";
@@ -107,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
             pulseBtn.style.background = "#ef4444"; 
 
         } else if (graphState === 2) {
-            // Deploy Enterprise ESB Trap (MuleSoft Mock)
             nodes.add(esbNodes);
             edges.add(esbEdges);
             toggleBtn.innerText = "View Sovereign Graph";
@@ -128,18 +125,41 @@ document.addEventListener('DOMContentLoaded', () => {
         let step = 0;
         
         if (graphState === 0) {
-            // NARRATIVE: The Sovereign RAG Pipeline (Order)
-            pulseBtn.innerText = "Executing RAG Query...";
+            // NARRATIVE: The Sovereign RAG Pipeline (Ingestion + AI Query)
             let flowInterval = setInterval(() => {
                 if (step === 0) {
-                    edges.update({ id: 's6', color: { color: '#10b981' }, width: 4 }); 
+                    pulseBtn.innerText = "Syncing Telemetry...";
+                    // INGESTION BEAT 1: Peripheral systems surge data to the center
+                    edges.update([
+                        { id: 's1', color: { color: '#3b82f6' }, width: 3 },
+                        { id: 's2', color: { color: '#3b82f6' }, width: 3 },
+                        { id: 's3', color: { color: '#3b82f6' }, width: 3 },
+                        { id: 's4', color: { color: '#3b82f6' }, width: 3 }
+                    ]);
                 } else if (step === 1) {
+                    // INGESTION BEAT 2: Edges reset, Core Metadata flashes to confirm receipt
+                    edges.update([
+                        { id: 's1', color: { color: '#94a3b8' }, width: 1 },
+                        { id: 's2', color: { color: '#94a3b8' }, width: 1 },
+                        { id: 's3', color: { color: '#94a3b8' }, width: 1 },
+                        { id: 's4', color: { color: '#94a3b8' }, width: 1 }
+                    ]);
+                    nodes.update({ id: 4, color: '#3b82f6', font: { color: '#ffffff' } });
+                    pulseBtn.innerText = "Executing RAG Query...";
+                } else if (step === 2) {
+                    // RAG BEAT 1: Core Metadata resets, FastAPI queries the hub
+                    nodes.update({ id: 4, color: '#d4b483', font: { color: '#0f172a' } }); 
+                    edges.update({ id: 's6', color: { color: '#10b981' }, width: 4 }); 
+                } else if (step === 3) {
+                    // RAG BEAT 2: FastAPI payload moves to Local LLM
                     edges.update({ id: 's6', color: { color: '#94a3b8' }, width: 1 });
                     edges.update({ id: 's7', color: { color: '#10b981' }, width: 4 }); 
-                } else if (step === 2) {
+                } else if (step === 4) {
+                    // RAG BEAT 3: Successful Local Generation
                     edges.update({ id: 's7', color: { color: '#94a3b8' }, width: 1 });
                     nodes.update({ id: 7, color: '#10b981', label: '✅ ZERO CLOUD\nDEPENDENCY' }); 
-                } else if (step === 5) { 
+                } else if (step === 7) { 
+                    // RESET STATE
                     nodes.update({ id: 7, color: '#1e293b', label: 'Local Air-Gapped\nLLM' }); 
                     pulseBtn.disabled = false;
                     toggleBtn.disabled = false;
@@ -206,7 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     pulseBtn.style.opacity = "1";
                     nodes.update({ id: 1, color: '#ef4444', font: { color: '#ffffff' }, label: '⚠️ METADATA\nORPHANED' });
                 } else if (step === 8) { 
-                    // Reset Sequence
                     nodes.update({ id: 1, color: '#cbd5e1', font: { color: '#0f172a' }, label: 'Core\nMetadata' });
                     nodes.update({ id: 3, color: '#6366f1', font: { color: '#ffffff' }, label: 'DataWeave\nScript Box' });
                     edges.update({ id: 'E5', color: { color: '#94a3b8' }, dashes: false, width: 1 });
@@ -219,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     clearInterval(flowInterval);
                 }
                 step++;
-            }, 750); // Slower interval to let the user read the accumulating cost
+            }, 750); 
         }
     });
 });
