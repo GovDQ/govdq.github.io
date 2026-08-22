@@ -99,14 +99,21 @@
       </div>
     </div>
 
-    <!-- NEW: Institutional Graph Visualization -->
+    <!-- UPDATED: Institutional Graph Visualization -->
     <section class="interactive-section hidden">
       <h2>Graph-Native Data Intelligence</h2>
       <p>Modern institutional intelligence isn't tabular; it's relational. Interact with the architectural node map below to visualize how core metadata acts as the connective tissue between disparate university systems.</p>
+      
+      <!-- NEW: Graph Controls -->
+      <div style="display: flex; gap: 1rem; margin-top: 2rem; margin-bottom: 1rem; justify-content: center; flex-wrap: wrap;">
+        <button type="button" id="toggleGraphBtn" style="width: auto; padding: 0.75rem 1.5rem; background: #1e293b; border: 1px solid #d4b483; color: #d4b483; font-weight: 600; border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;">View Legacy Silos</button>
+        <button type="button" id="pulseBtn" style="width: auto; padding: 0.75rem 1.5rem; background: var(--accent-blue); border: none; color: white; font-weight: 600; border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;">Simulate Policy Injection</button>
+      </div>
+
       <div id="institutionalGraph"></div>
     </section>
 
-    <!-- NEW: Financial SaaS Calculator -->
+    <!-- UPDATED: Financial SaaS Calculator -->
     <section class="interactive-section hidden">
       <h2>The Financial SaaS Trap</h2>
       <p>Enterprise data catalogs rely on punishing recurring models. Use the slider below to project the 5-year exponential compounding cost of cloud licensing against the flat-rate sustainability of self-hosted, sovereign architecture.</p>
@@ -119,7 +126,20 @@
         <label for="userBaseInput" style="color: var(--text-muted); font-weight: 600;">
           Adjust Starting SaaS Licensing Base: <span id="sliderValue" style="color: var(--text-white);">$50,000</span>
         </label>
-        <input type="range" id="userBaseInput" min="10000" max="250000" step="5000" value="50000" oninput="document.getElementById('sliderValue').innerText = '$' + Number(this.value).toLocaleString()">
+        <input type="range" id="userBaseInput" min="10000" max="250000" step="5000" value="50000" oninput="
+          document.getElementById('sliderValue').innerText = '$' + Number(this.value).toLocaleString();
+          let base = Number(this.value);
+          let totalSaaS = base + (base * 1.2) + (base * 1.44) + (base * 1.72) + (base * 2.07);
+          let delta = totalSaaS - 100000;
+          document.getElementById('opportunityCost').innerText = '$' + delta.toLocaleString(undefined, {maximumFractionDigits: 0});
+        ">
+      </div>
+
+      <!-- NEW: Opportunity Cost Box -->
+      <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(239, 68, 68, 0.05); border-left: 4px solid #ef4444; border-radius: 8px;">
+        <h4 style="color: #ef4444; margin-bottom: 0.5rem; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;">The SaaS Tax (5-Year Delta)</h4>
+        <p style="font-size: 1.25rem; font-weight: 600; color: var(--text-white);">Opportunity Cost: <span id="opportunityCost" style="color: #ef4444;">$272,080</span></p>
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.5rem;">This represents the compounding capital drain diverted away from institutional engineering and directly into vendor lock-in.</p>
       </div>
     </section>
 
