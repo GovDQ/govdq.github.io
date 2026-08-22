@@ -1,0 +1,110 @@
+/* 
+  1. CSS Variables for Dynamic Theming 
+*/
+:root {
+  --bg-deep: #0f172a;
+  --bg-card: #1e293b;
+  --accent-blue: #3b82f6;
+  --accent-gold: #d4b483;
+  --text-white: #f8fafc;
+  --text-muted: #94a3b8;
+  --border-subtle: rgba(255,255,255,0.1);
+  --input-bg: #0f172a;
+  --error-bg: rgba(239, 68, 68, 0.05);
+}
+
+[data-theme="light"] {
+  --bg-deep: #f8fafc;
+  --bg-card: #ffffff;
+  --accent-blue: #2563eb;
+  --accent-gold: #b45309; 
+  --text-white: #0f172a;
+  --text-muted: #475569;
+  --border-subtle: rgba(0,0,0,0.1);
+  --input-bg: #f1f5f9;
+  --error-bg: rgba(239, 68, 68, 0.1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* 2. Text Scaling & Base Accessibility */
+body { font-family: 'Inter', sans-serif; background-color: var(--bg-deep); color: var(--text-white); line-height: 1.7; transition: background-color 0.3s, color 0.3s; font-size: 1rem; }
+body.large-text { font-size: 1.15rem; }
+body.large-text h1 { font-size: 4rem; }
+body.large-text h2 { font-size: 2.85rem; }
+
+*:focus-visible { outline: 3px solid var(--accent-blue); outline-offset: 3px; border-radius: 4px; }
+
+/* 3. Global Header */
+header { background: linear-gradient(135deg, var(--bg-card), var(--bg-deep)); text-align: center; padding: 5rem 1rem; border-bottom: 1px solid var(--border-subtle); position: relative; }
+header img { height: 120px; margin-bottom: 1.5rem; filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.3)); }
+header h1 { font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 0.5rem; letter-spacing: -1px; }
+header p { font-size: 1.25rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 2px; }
+
+.nav-links { margin-top: 2rem; display: flex; justify-content: center; gap: 2rem; }
+.nav-links a { color: var(--text-white); text-decoration: none; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+.nav-links a:hover { color: var(--accent-gold); }
+
+/* 4. Accessibility Control Panel */
+.a11y-controls { position: fixed; top: 1.5rem; right: 1.5rem; display: flex; gap: 0.5rem; z-index: 9990; }
+.a11y-controls button { width: auto; padding: 0.5rem 0.75rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-white); cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: opacity 0.3s; }
+.a11y-controls button:hover { border-color: var(--accent-blue); }
+
+/* 5. Trailing Cursor Styles */
+#cursor-dot { position: fixed; top: -10px; left: -10px; width: 10px; height: 10px; background-color: #064e3b; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: opacity 0.3s ease; box-shadow: 0 0 8px rgba(6, 78, 59, 0.4); }
+.cursor-hidden { opacity: 0 !important; }
+.trail-dot { position: fixed; width: 6px; height: 6px; background-color: #064e3b; border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); opacity: 0.4; animation: fadeTrail 3s ease-out forwards; }
+
+@keyframes fadeTrail {
+  0% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+}
+
+/* 6. Layouts & Cards */
+main { max-width: 1000px; margin: 0 auto; padding: 4rem 2rem; }
+.hero-section { text-align: center; margin-bottom: 6rem; }
+.hero-section h2 { font-size: 2.5rem; margin-bottom: 1.5rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 6rem; }
+.card { background: var(--bg-card); padding: 2rem; border-radius: 16px; border: 1px solid var(--border-subtle); transition: transform 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.card:hover { transform: translateY(-10px); border-color: var(--accent-blue); }
+.card h3 { color: var(--accent-blue); margin-bottom: 1rem; font-size: 1.5rem; }
+.value-prop { background: rgba(59, 130, 246, 0.05); padding: 3rem; border-radius: 20px; border: 1px solid rgba(59, 130, 246, 0.2); margin-bottom: 6rem; }
+
+/* 7. Interactive Story Sections */
+.interactive-section { background: var(--bg-card); padding: 3rem; border-radius: 20px; border: 1px solid var(--border-subtle); margin-bottom: 6rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+.interactive-section h2 { margin-bottom: 1rem; font-size: 2rem; }
+.chart-container { position: relative; height: 350px; width: 100%; margin-bottom: 2rem; }
+.slider-container { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.5rem; }
+.slider-container input[type="range"] { width: 100%; cursor: pointer; accent-color: var(--accent-blue); }
+#institutionalGraph { height: 400px; width: 100%; border: 1px solid var(--border-subtle); border-radius: 8px; background: var(--input-bg); margin-top: 2rem; }
+
+/* 8. Text & Highlight Blocks (About Page) */
+.story-block { margin-bottom: 4rem; }
+.story-block h2 { font-size: 2.25rem; color: var(--accent-blue); margin-bottom: 1.5rem; font-family: 'Playfair Display', serif; }
+.story-block p { font-size: 1.125rem; color: var(--text-muted); margin-bottom: 1.5rem; font-weight: 300; }
+.story-block strong { color: var(--text-white); font-weight: 600; }
+.highlight-box { background: var(--bg-card); padding: 2.5rem; border-radius: 16px; border-left: 4px solid var(--accent-gold); margin: 3rem 0; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+.highlight-box h3 { color: var(--accent-gold); margin-bottom: 1rem; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
+
+/* 9. Scroll Reveal CSS */
+.hidden { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+.show { opacity: 1; transform: translateY(0); }
+
+/* 10. Forms */
+form { background: var(--bg-card); padding: 3rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--border-subtle); }
+input[type="text"], input[type="email"], textarea, select { width: 100%; padding: 1rem; margin-bottom: 1.5rem; border: 1px solid var(--border-subtle); border-radius: 8px; background: var(--input-bg); color: var(--text-white); font-size: 1rem; transition: border-color 0.3s; }
+input:focus, textarea:focus, select:focus { border-color: var(--accent-blue); outline: none; }
+select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; }
+button[type="submit"] { background: var(--accent-blue); color: #ffffff; border: none; padding: 1rem 2rem; width: 100%; font-weight: 800; border-radius: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+button[type="submit"]:hover { background: #2563eb; }
+
+/* 11. Global Footer */
+footer { text-align: center; padding: 4rem; color: var(--text-muted); border-top: 1px solid var(--border-subtle); margin-top: 4rem; }
+footer a { color: var(--accent-blue); text-decoration: none; margin: 0 1rem; }
+
+/* 12. Mobile Responsiveness */
+@media (max-width: 768px) { 
+  header h1 { font-size: 2.5rem; } 
+  .a11y-controls { top: 1rem; right: 1rem; } 
+  #cursor-dot, .trail-dot { display: none; } 
+}
