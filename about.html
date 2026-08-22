@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About | GovDQ & The Sovereign Movement</title>
+  <link rel="icon" type="image/jpeg" href="assets/images/1753254833234.jpg">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* CSS Variables for Dynamic Theming */
+    :root {
+      --bg-deep: #0f172a;
+      --bg-card: #1e293b;
+      --accent-blue: #3b82f6;
+      --accent-gold: #d4b483;
+      --text-white: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-subtle: rgba(255,255,255,0.1);
+      --input-bg: #0f172a;
+      --error-bg: rgba(239, 68, 68, 0.05);
+    }
+
+    [data-theme="light"] {
+      --bg-deep: #f8fafc;
+      --bg-card: #ffffff;
+      --accent-blue: #2563eb;
+      --accent-gold: #b45309; 
+      --text-white: #0f172a;
+      --text-muted: #475569;
+      --border-subtle: rgba(0,0,0,0.1);
+      --input-bg: #f1f5f9;
+      --error-bg: rgba(239, 68, 68, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body { font-family: 'Inter', sans-serif; background-color: var(--bg-deep); color: var(--text-white); line-height: 1.7; transition: background-color 0.3s, color 0.3s; font-size: 1rem; }
+    body.large-text { font-size: 1.15rem; }
+    body.large-text h1 { font-size: 4rem; }
+    body.large-text h2 { font-size: 2.85rem; }
+
+    *:focus-visible { outline: 3px solid var(--accent-blue); outline-offset: 3px; border-radius: 4px; }
+
+    header { background: linear-gradient(135deg, var(--bg-card), var(--bg-deep)); text-align: center; padding: 4rem 1rem; border-bottom: 1px solid var(--border-subtle); position: relative; }
+    header h1 { font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 0.5rem; letter-spacing: -1px; }
+    
+    /* Navigation Links */
+    .nav-links { margin-top: 2rem; display: flex; justify-content: center; gap: 2rem; }
+    .nav-links a { color: var(--text-white); text-decoration: none; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+    .nav-links a:hover { color: var(--accent-gold); }
+
+    .a11y-controls { position: fixed; top: 1.5rem; right: 1.5rem; display: flex; gap: 0.5rem; z-index: 9990; }
+    .a11y-controls button { width: auto; padding: 0.5rem 0.75rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-white); cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: opacity 0.3s; }
+    .a11y-controls button:hover { border-color: var(--accent-blue); }
+
+    /* Trailing Cursor Styles */
+    #cursor-dot { position: fixed; top: -10px; left: -10px; width: 10px; height: 10px; background-color: #064e3b; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: opacity 0.3s ease; box-shadow: 0 0 8px rgba(6, 78, 59, 0.4); }
+    .cursor-hidden { opacity: 0 !important; }
+    .trail-dot { position: fixed; width: 6px; height: 6px; background-color: #064e3b; border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); opacity: 0.4; animation: fadeTrail 3s ease-out forwards; }
+    @keyframes fadeTrail { 0% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); } }
+
+    main { max-width: 800px; margin: 0 auto; padding: 4rem 2rem; }
+
+    .story-block { margin-bottom: 4rem; }
+    .story-block h2 { font-size: 2.25rem; color: var(--accent-blue); margin-bottom: 1.5rem; font-family: 'Playfair Display', serif; }
+    .story-block p { font-size: 1.125rem; color: var(--text-muted); margin-bottom: 1.5rem; font-weight: 300; }
+    .story-block strong { color: var(--text-white); font-weight: 600; }
+
+    .highlight-box { background: var(--bg-card); padding: 2.5rem; border-radius: 16px; border-left: 4px solid var(--accent-gold); margin: 3rem 0; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+    .highlight-box h3 { color: var(--accent-gold); margin-bottom: 1rem; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
+
+    footer { text-align: center; padding: 4rem; color: var(--text-muted); border-top: 1px solid var(--border-subtle); }
+    footer a { color: var(--accent-blue); text-decoration: none; margin: 0 1rem; }
+
+    /* Scroll Reveal CSS */
+    .hidden { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+    .show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 768px) { header h1 { font-size: 2.5rem; } .a11y-controls { top: 1rem; right: 1rem; } #cursor-dot { display: none; } .trail-dot { display: none; } }
+  </style>
+</head>
+<body>
+  <div id="cursor-dot"></div>
+
+  <header>
+    <div class="a11y-controls">
+      <button id="themeToggle" aria-label="Toggle Light and Dark Mode">🌙</button>
+      <button id="textSizeToggle" aria-label="Toggle Large Text Size">A+</button>
+      <button id="cursorToggle" aria-label="Toggle Trailing Cursor">🪄</button>
+    </div>
+    <h1>The Sovereign Evangelist</h1>
+    <p style="color: var(--text-muted);">Empowering Strategy Through Data Ownership</p>
+    
+    <div class="nav-links">
+      <a href="index.html">← Back to Architecture</a>
+    </div>
+  </header>
+
+  <main id="main-content">
+    
+    <div class="story-block hidden">
+      <h2>Why GovDQ Exists</h2>
+      <p>I started GovDQ because I am deeply passionate about empowering institutional strategy through data. For too long, organizations have been forced to surrender their core intelligence to fragmented, expensive, rent-seeking SaaS vendors.</p>
+      <p>My background is rooted in Accounting Information Systems (AIS) and Financial Leadership. When you approach data from a financial and audit perspective, you realize very quickly that <strong>if you cannot trace the lineage of your data, you cannot trust it</strong>—and if you do not own the infrastructure it lives on, you do not truly own your strategy.</p>
+      <p>GovDQ is not a consulting firm or a software vendor. It is a movement. It is an open-source community dedicated to sharing the playbooks, blueprints, and code necessary for institutions to reclaim their digital sovereignty.</p>
+    </div>
+
+    <div class="story-block hidden">
+      <h2>A Foundation Built on Execution</h2>
+      <p>My perspective wasn't formed in a vacuum; it was built over a decade of hands-on execution. During my tenure at the University of Nebraska at Omaha—transitioning from teaching Accounting Information Systems to serving as the Director of Business Systems Intelligence—I saw firsthand how siloed data paralyzed executive decision-making. I spent years tying complex financial budgets and tuition remission strategies to student outcomes, realizing that brilliant strategy always fails if the underlying data architecture is fractured.</p>
+      <p>That realization led me to Oregon Health & Science University (OHSU), where I was tasked with building an enterprise data governance program completely from scratch. I designed the foundational operating models, architected the policies, and engineered dozens of custom metadata workflows. Most importantly, I launched a comprehensive Data Fluency program to bridge the gap between technical stewards and executive leadership, proving that true governance is a cultural transformation, not just an IT project.</p>
+    </div>
+
+    <div class="highlight-box hidden">
+      <h3>From Theory to Reality: AngryData</h3>
+      <p style="color: var(--text-white); font-weight: 300;">
+        Evangelizing data sovereignty is meaningless without proof of execution. As the Chief Institutional Intelligence Officer (CIIO) at Maryville University, I didn't just advocate for this model—my team and I built it to drive Cabinet-level planning and AI readiness.
+      </p>
+      <p style="color: var(--text-white); font-weight: 300; margin-top: 1rem;">
+        We engineered an entirely in-house data operating system called <strong>AngryData</strong>. By utilizing an open-source, graph-native stack, we bypassed traditional enterprise catalogs, effectively breaking vendor lock-in and proving that world-class institutional intelligence can be built securely from the inside out.
+      </p>
+    </div>
+
+    <div class="story-block hidden">
+      <h2>Building the Blueprint</h2>
+      <p>The success of platforms like AngryData proves that the era of mandatory cloud lock-in is over. We now have access to incredible open-source tools—FastAPI, React, PostgreSQL, Neo4j, and containerized LLMs—that allow us to build secure, locally hosted digital vaults.</p>
+      <p>Through GovDQ, my goal is to act as a sovereign evangelist. I want to help other architects, provosts, and executive leaders realize that they can escape the SaaS tax. You can own your architecture, govern what you ingest, and trust what you measure.</p>
+      <p>The architecture works. The blueprints are here. Let's build.</p>
+    </div>
+
+  </main>
+
+  <footer class="hidden">
+    <a href="https://github.com/GovDQ" aria-label="GovDQ GitHub Profile">GitHub</a>
+    <a href="https://x.com/GovDQ" aria-label="GovDQ Twitter Profile">Twitter</a>
+    <a href="https://www.linkedin.com/company/govdq" aria-label="GovDQ LinkedIn Page">LinkedIn</a>
+    <p style="margin-top: 2rem;">© 2026 GovDQ. Open Knowledge.</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Theme Toggle Logic
+      const themeBtn = document.getElementById('themeToggle');
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      
+      if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeBtn.innerText = '☀️';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeBtn.innerText = '🌙';
+      }
+
+      themeBtn.addEventListener('click', () => {
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        if (isLight) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          localStorage.setItem('theme', 'dark');
+          themeBtn.innerText = '☀️';
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          localStorage.setItem('theme', 'light');
+          themeBtn.innerText = '🌙';
+        }
+      });
+
+      // Text Size Toggle Logic
+      const textBtn = document.getElementById('textSizeToggle');
+      const savedTextSize = localStorage.getItem('largeText') === 'true';
+      if (savedTextSize) document.body.classList.add('large-text');
+
+      textBtn.addEventListener('click', () => {
+        document.body.classList.toggle('large-text');
+        localStorage.setItem('largeText', document.body.classList.contains('large-text'));
+      });
+
+      // Trailing Cursor Logic
+      const cursorBtn = document.getElementById('cursorToggle');
+      const cursorDot = document.getElementById('cursor-dot');
+      const savedCursor = localStorage.getItem('cursorActive');
+      let isCursorActive = savedCursor !== 'false'; 
+
+      if (!isCursorActive) {
+        cursorDot.classList.add('cursor-hidden');
+        cursorBtn.style.opacity = '0.5';
+      }
+
+      cursorBtn.addEventListener('click', () => {
+        isCursorActive = !isCursorActive;
+        localStorage.setItem('cursorActive', isCursorActive);
+        if (isCursorActive) {
+          cursorDot.classList.remove('cursor-hidden');
+          cursorBtn.style.opacity = '1';
+        } else {
+          cursorDot.classList.add('cursor-hidden');
+          cursorBtn.style.opacity = '0.5';
+        }
+      });
+
+      // Cursor Physics Engine
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
+      let dotX = mouseX;
+      let dotY = mouseY;
+      let lastSpawnX = dotX;
+      let lastSpawnY = dotY;
+
+      window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+
+      function animateCursor() {
+        dotX += (mouseX - dotX) * 0.15; 
+        dotY += (mouseY - dotY) * 0.15;
+        
+        if (cursorDot) {
+          cursorDot.style.left = `${dotX}px`;
+          cursorDot.style.top = `${dotY}px`;
+        }
+
+        if (isCursorActive) {
+          const dist = Math.hypot(dotX - lastSpawnX, dotY - lastSpawnY);
+          if (dist > 12) { 
+            const trail = document.createElement('div');
+            trail.className = 'trail-dot';
+            trail.style.left = `${dotX}px`;
+            trail.style.top = `${dotY}px`;
+            document.body.appendChild(trail);
+            lastSpawnX = dotX;
+            lastSpawnY = dotY;
+            setTimeout(() => { trail.remove(); }, 3000);
+          }
+        }
+        requestAnimationFrame(animateCursor);
+      }
+      animateCursor();
+    });
+  </script>
+  
+  <!-- Scroll Reveal Script Link -->
+  <script src="assets/js/scroll-reveal.js"></script>
+</body>
+</html>
