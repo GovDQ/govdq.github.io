@@ -11,6 +11,10 @@
   --border-subtle: rgba(255,255,255,0.1);
   --input-bg: #0f172a;
   --error-bg: rgba(239, 68, 68, 0.05);
+  
+  /* Dark Mode Cursor (Light Mellow Green) */
+  --cursor-color: #a7f3d0; 
+  --cursor-glow: rgba(167, 243, 208, 0.4);
 }
 
 [data-theme="light"] {
@@ -23,6 +27,10 @@
   --border-subtle: rgba(0,0,0,0.1);
   --input-bg: #f1f5f9;
   --error-bg: rgba(239, 68, 68, 0.1);
+  
+  /* Light Mode Cursor (Dark Green) */
+  --cursor-color: #064e3b; 
+  --cursor-glow: rgba(6, 78, 59, 0.4);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -51,9 +59,23 @@ header p { font-size: 1.25rem; color: var(--accent-gold); text-transform: upperc
 .a11y-controls button:hover { border-color: var(--accent-blue); }
 
 /* 5. Trailing Cursor Styles */
-#cursor-dot { position: fixed; top: -10px; left: -10px; width: 10px; height: 10px; background-color: #064e3b; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: opacity 0.3s ease; box-shadow: 0 0 8px rgba(6, 78, 59, 0.4); }
+#cursor-dot { 
+  position: fixed; top: -10px; left: -10px; width: 10px; height: 10px; 
+  background-color: var(--cursor-color); 
+  border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); 
+  transition: opacity 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease; 
+  box-shadow: 0 0 8px var(--cursor-glow); 
+}
+
 .cursor-hidden { opacity: 0 !important; }
-.trail-dot { position: fixed; width: 6px; height: 6px; background-color: #064e3b; border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); opacity: 0.4; animation: fadeTrail 3s ease-out forwards; }
+
+.trail-dot { 
+  position: fixed; width: 6px; height: 6px; 
+  background-color: var(--cursor-color); 
+  border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); 
+  opacity: 0.4; animation: fadeTrail 3s ease-out forwards; 
+  transition: background-color 0.3s ease;
+}
 
 @keyframes fadeTrail {
   0% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
