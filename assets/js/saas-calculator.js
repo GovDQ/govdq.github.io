@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false, // <-- THE FIX
             plugins: {
                 legend: { labels: { color: '#f8fafc' } }
             },
