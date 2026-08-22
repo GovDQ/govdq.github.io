@@ -4,7 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GovDQ | Open-Source Data & Institutional Intelligence</title>
+  
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  
+  <!-- External Data Visualization Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  
   <style>
     :root {
       --bg-deep: #0f172a;
@@ -35,8 +42,20 @@
 
     .value-prop { background: rgba(59, 130, 246, 0.05); padding: 3rem; border-radius: 20px; border: 1px solid rgba(59, 130, 246, 0.2); margin-bottom: 6rem; }
     
+    /* Interactive Sections (Graph & Calculator) */
+    .interactive-section { background: var(--bg-card); padding: 3rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 6rem; }
+    .interactive-section h2 { margin-bottom: 1rem; font-size: 2rem; }
+    .chart-container { position: relative; height: 350px; width: 100%; margin-bottom: 2rem; }
+    .slider-container { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.5rem; }
+    .slider-container input[type="range"] { width: 100%; cursor: pointer; accent-color: var(--accent-blue); }
+    #institutionalGraph { height: 400px; width: 100%; border: 1px solid #334155; border-radius: 8px; background: #0f172a; margin-top: 2rem; }
+
+    /* Scroll Reveal CSS */
+    .hidden { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+    .show { opacity: 1; transform: translateY(0); }
+    
     form { background: var(--bg-card); padding: 3rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-    input, textarea, select { width: 100%; padding: 1rem; margin-bottom: 1.5rem; border: 1px solid #334155; border-radius: 8px; background: #0f172a; color: white; font-size: 1rem; }
+    input[type="text"], input[type="email"], textarea, select { width: 100%; padding: 1rem; margin-bottom: 1.5rem; border: 1px solid #334155; border-radius: 8px; background: #0f172a; color: white; font-size: 1rem; }
     select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; }
     
     button { background: var(--accent-blue); color: white; border: none; padding: 1rem 2rem; width: 100%; font-weight: 800; border-radius: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
@@ -56,36 +75,60 @@
   </header>
 
   <main>
-    <section class="hero-section">
+    <section class="hero-section hidden">
       <h2>Sharing frameworks, playbooks, and insights for the modern data estate.</h2>
       <p>I share open-source architecture models, research, and practical advice on breaking vendor lock-in and deploying air-gapped AI. This is a space dedicated to institutional intelligence, financial leadership, and building systems that you actually own.</p>
     </section>
 
     <div class="grid">
-      <div class="card">
+      <div class="card hidden">
         <h3>Sovereign Architecture</h3>
         <p>Discussions and blueprints for true data sovereignty. Exploring how to move away from expensive SaaS environments and build programmable digital vaults utilizing React, FastAPI, PostgreSQL, and Neo4j.</p>
       </div>
-      <div class="card">
+      <div class="card hidden">
         <h3>GitOps Governance</h3>
         <p>Frameworks for managing data policies with the rigor of elite software teams. Learn how to implement version control, audit trails, and automated triage to replace legacy catalogs.</p>
       </div>
-      <div class="card">
+      <div class="card hidden">
         <h3>Air-Gapped AI Research</h3>
         <p>Exploring zero-cloud dependency infrastructure. I share insights on running containerized Docker deployments and self-hosted large language models to ensure zero data leakage.</p>
       </div>
-      <div class="card">
+      <div class="card hidden">
         <h3>Data Fluency & Education</h3>
         <p>Bridging the gap between technical execution and business strategy. I regularly offer free guest lectures, executive workshops, and architectural advice to institutional leaders.</p>
       </div>
     </div>
 
-    <section class="value-prop">
+    <!-- NEW: Institutional Graph Visualization -->
+    <section class="interactive-section hidden">
+      <h2>Graph-Native Data Intelligence</h2>
+      <p>Modern institutional intelligence isn't tabular; it's relational. Interact with the architectural node map below to visualize how core metadata acts as the connective tissue between disparate university systems.</p>
+      <div id="institutionalGraph"></div>
+    </section>
+
+    <!-- NEW: Financial SaaS Calculator -->
+    <section class="interactive-section hidden">
+      <h2>The Financial SaaS Trap</h2>
+      <p>Enterprise data catalogs rely on punishing recurring models. Use the slider below to project the 5-year exponential compounding cost of cloud licensing against the flat-rate sustainability of self-hosted, sovereign architecture.</p>
+      
+      <div class="chart-container">
+        <canvas id="costChart"></canvas>
+      </div>
+      
+      <div class="slider-container">
+        <label for="userBaseInput" style="color: var(--text-muted); font-weight: 600;">
+          Adjust Starting SaaS Licensing Base: <span id="sliderValue" style="color: var(--text-white);">$50,000</span>
+        </label>
+        <input type="range" id="userBaseInput" min="10000" max="250000" step="5000" value="50000" oninput="document.getElementById('sliderValue').innerText = '$' + Number(this.value).toLocaleString()">
+      </div>
+    </section>
+
+    <section class="value-prop hidden">
       <h2 style="margin-bottom: 1rem;">Let's Talk Data</h2>
       <p>I believe in the power of open-source knowledge sharing. I do not sell shrink-wrapped software or push consulting retainers here. If you are navigating complex data governance issues, looking to optimize your enterprise architecture, or just want to bounce ideas off someone who builds these systems daily, I am always happy to chat.</p>
     </section>
 
-    <form action="https://formsubmit.co/info@govdq.com" method="POST">
+    <form class="hidden" action="https://formsubmit.co/info@govdq.com" method="POST">
       <input type="hidden" name="_next" value="https://www.govdq.com/index.html">
       <input type="hidden" name="_subject" value="GovDQ Architecture Chat Request">
       <h2 style="margin-bottom: 2rem; text-align: center;">Request a Free Architecture Chat</h2>
@@ -106,11 +149,16 @@
     </form>
   </main>
 
-  <footer>
+  <footer class="hidden">
     <a href="https://github.com/GovDQ">GitHub</a>
     <a href="https://x.com/GovDQ">Twitter</a>
     <a href="https://www.linkedin.com/company/govdq">LinkedIn</a>
     <p style="margin-top: 2rem;">© 2026 GovDQ. Open Knowledge.</p>
   </footer>
+
+  <!-- Custom External Logic Scripts -->
+  <script src="assets/js/scroll-reveal.js"></script>
+  <script src="assets/js/graph-viz.js"></script>
+  <script src="assets/js/saas-calculator.js"></script>
 </body>
 </html>
